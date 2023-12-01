@@ -1,0 +1,983 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;\f2\fnil\fcharset0 Menlo-Italic;
+\f3\fnil\fcharset0 Menlo-BoldItalic;}
+{\colortbl;\red255\green255\blue255;\red63\green95\blue191;\red127\green0\blue85;\red127\green159\blue191;
+\red63\green127\blue95;\red0\green0\blue192;\red106\green62\blue62;\red100\green100\blue100;\red42\green0\blue255;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c24706\c37255\c74902;\csgenericrgb\c49804\c0\c33333;\csgenericrgb\c49804\c62353\c74902;
+\csgenericrgb\c24706\c49804\c37255;\csgenericrgb\c0\c0\c75294;\csgenericrgb\c41569\c24314\c24314;\csgenericrgb\c39216\c39216\c39216;\csgenericrgb\c16471\c0\c100000;
+}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \
+/**\cf0 \
+\cf2  * This package contains classes related to the JDBC utility for interacting with a MySQL database.\cf0 \
+\cf2  */\cf0 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b \cf3 package
+\f0\b0 \cf0  jdbc;\
+\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  javax.swing.*;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.awt.*;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.awt.event.ActionEvent;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.awt.event.ActionListener;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.sql.Connection;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.sql.DriverManager;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  \ul java.sql.PreparedStatement\ulnone ;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.sql.ResultSet;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.sql.SQLException;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.sql.Statement;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.text.SimpleDateFormat;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.util.Calendar;\
+
+\f1\b \cf3 import
+\f0\b0 \cf0  java.util.Date;\
+\
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 /**\cf0 \
+\cf2  * 
+\f1\b \cf4 @author
+\f0\b0 \cf2  \ul Fiodor\ulnone  \ul Culacovschi\cf0 \ulnone \
+\cf2  * 
+\f1\b \cf4 @version
+\f0\b0 \cf2  12.01.2023\cf0 \
+\cf2  */\cf0 \
+\cf2 /**\cf0 \
+\cf2  * The JDBC class contains the main method and GUI components for the Library Management System.\cf0 \
+\cf2  * It allows users to display, add, remove, check out, and check in books.\cf0 \
+\cf2  * It provides methods for interacting with a MySQL database.\cf0 \
+\cf2  */\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 class
+\f0\b0 \cf0  JDBC \{\
+	\
+	\cf5 // Variables for GUI components and book due date information\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  JTextArea 
+\f2\i \cf6 textArea
+\f0\i0 \cf0 ;\
+	
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  String 
+\f2\i \cf6 dueDate
+\f0\i0 \cf0 ;\
+	
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  String 
+\f2\i \cf6 formattedDueDate
+\f0\i0 \cf0 ;\
+\
+	\
+	\cf2 /**\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf2      * Main method to launch the Library Management System GUI.\cf0 \
+\cf2      *\cf0 \
+\cf2      * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  \ul args\ulnone  Command line arguments (not used in this application).\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  main(String[] \cf7 args\cf0 ) \{\
+        SwingUtilities.
+\f2\i invokeLater
+\f0\i0 (
+\f1\b \cf3 new
+\f0\b0 \cf0  Runnable() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  run() \{\
+                
+\f2\i createAndShowGUI
+\f0\i0 ();\
+            \}\
+        \});\
+    \}\
+    \
+    \cf2 /**\cf0 \
+\cf2      * Creates and shows the main GUI for the Library Management System.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  createAndShowGUI() \{\
+        \
+    	\cf5 // Creating the main JFrame\cf0 \
+    	JFrame \cf7 frame\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JFrame(\cf9 "Library Management System"\cf0 );\
+        \cf7 frame\cf0 .setDefaultCloseOperation(JFrame.
+\f3\i\b \cf6 EXIT_ON_CLOSE
+\f0\i0\b0 \cf0 );\
+\
+        \cf5 // Components for buttons and text area\cf0 \
+        JPanel \cf7 panel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JPanel();\
+        JButton \cf7 displayButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Display Database Content"\cf0 );\
+        JButton \cf7 addButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Add Book"\cf0 );\
+        JButton \cf7 removeButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Remove Book"\cf0 );\
+        JButton \cf7 checkoutButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Check Out Book"\cf0 );\
+        JButton \cf7 checkinButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Check In Book"\cf0 );\
+\
+        \cf5 // Text area and scroll pane\cf0 \
+        
+\f2\i \cf6 textArea
+\f0\i0 \cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextArea(20, 40);\
+        
+\f2\i \cf6 textArea
+\f0\i0 \cf0 .setEditable(
+\f1\b \cf3 false
+\f0\b0 \cf0 );\
+        JScrollPane \cf7 scrollPane\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JScrollPane(
+\f2\i \cf6 textArea
+\f0\i0 \cf0 );\
+\
+        \cf5 // Adding action listeners to the buttons\cf0 \
+        \cf7 displayButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                
+\f2\i displayDatabaseContent
+\f0\i0 ();\
+            \}\
+        \});\
+\
+        \cf7 addButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                
+\f2\i addBookDialog
+\f0\i0 ();\
+            \}\
+        \});\
+\
+        \cf7 removeButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                
+\f2\i removeBookDialog
+\f0\i0 ();\
+            \}\
+        \});\
+\
+        \cf7 checkoutButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                
+\f2\i checkoutBookDialog
+\f0\i0 ();\
+            \}\
+        \});\
+\
+        \cf7 checkinButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                
+\f2\i checkinBookDialog
+\f0\i0 ();\
+            \}\
+        \});\
+        \
+        \
+        \cf5 // Adding components to the panel and setting layout\cf0 \
+        \cf7 panel\cf0 .add(\cf7 displayButton\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 addButton\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 removeButton\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 checkoutButton\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 checkinButton\cf0 );\
+        \
+        \
+        \cf5 // Adding components to the main frame and setting layout\cf0 \
+        \cf7 frame\cf0 .add(\cf7 panel\cf0 , BorderLayout.
+\f3\i\b \cf6 NORTH
+\f0\i0\b0 \cf0 );\
+        \cf7 frame\cf0 .add(\cf7 scrollPane\cf0 , BorderLayout.
+\f3\i\b \cf6 CENTER
+\f0\i0\b0 \cf0 );\
+        \cf7 frame\cf0 .pack();\
+        \cf7 frame\cf0 .setVisible(
+\f1\b \cf3 true
+\f0\b0 \cf0 );\
+    \}\
+\
+    \cf2 /**\cf0 \
+\cf2      * Displays the content of the database in the text area.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  displayDatabaseContent() \{\
+        \cf5 // Database connection\cf0 \
+        String \cf7 url\cf0  = \cf9 "jdbc:mysql://localhost:3306/LMS"\cf0 ;\
+        String \cf7 uname\cf0  = \cf9 "root"\cf0 ;\
+        String \cf7 password\cf0  = \cf9 ""\cf0 ;\
+        String \cf7 query\cf0  = \cf9 "SELECT * FROM BooksInMyLibrary"\cf0 ;\
+\
+        
+\f1\b \cf3 try
+\f0\b0 \cf0  \{\
+        	\cf5 // Loading the JDBC driver\cf0 \
+            Class.
+\f2\i forName
+\f0\i0 (\cf9 "com.mysql.cj.jdbc.Driver"\cf0 );\
+        \} 
+\f1\b \cf3 catch
+\f0\b0 \cf0  (ClassNotFoundException \cf7 ex\cf0 ) \{\
+            \cf7 ex\cf0 .printStackTrace();\
+        \}\
+\
+        
+\f1\b \cf3 try
+\f0\b0 \cf0  (Connection \cf7 con\cf0  = DriverManager.
+\f2\i getConnection
+\f0\i0 (\cf7 url\cf0 , \cf7 uname\cf0 , \cf7 password\cf0 );\
+             Statement \cf7 statement\cf0  = \cf7 con\cf0 .createStatement();\
+             ResultSet \cf7 result\cf0  = \cf7 statement\cf0 .executeQuery(\cf7 query\cf0 )) \{\
+\
+        	\cf5 // String with book data for display\cf0 \
+            StringBuilder \cf7 bookData\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  StringBuilder();\
+\
+            
+\f1\b \cf3 while
+\f0\b0 \cf0  (\cf7 result\cf0 .next()) \{\
+                
+\f1\b \cf3 for
+\f0\b0 \cf0  (
+\f1\b \cf3 int
+\f0\b0 \cf0  \cf7 i\cf0  = 1; \cf7 i\cf0  <= 5; \cf7 i\cf0 ++) \{\
+                    \cf7 bookData\cf0 .append(\cf7 result\cf0 .getString(\cf7 i\cf0 )).append(\cf9 " : "\cf0 );\
+                \}\
+\
+                String \cf7 dueDate\cf0  = \cf7 result\cf0 .getString(6);\
+                \cf7 bookData\cf0 .append(\cf9 "Due Date: "\cf0 ).append(\cf7 dueDate\cf0 ).append(\cf9 "\\n"\cf0 );\
+\
+                \cf7 bookData\cf0 .append(\cf9 "\\n\\n"\cf0 );\
+            \}\
+\
+            \cf5 // Setting the text area with the retrieved data\cf0 \
+            
+\f2\i \cf6 textArea
+\f0\i0 \cf0 .setText(\cf7 bookData\cf0 .toString());\
+        \} 
+\f1\b \cf3 catch
+\f0\b0 \cf0  (SQLException \cf7 ex\cf0 ) \{\
+            \cf7 ex\cf0 .printStackTrace();\
+        \}\
+    \}\
+ \
+    \
+    \cf2 /**\cf0 \
+\cf2      * Creates a dialog for adding a book and adds it to the database.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  addBookDialog() \{\
+        JFrame \cf7 addDialog\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JFrame(\cf9 "Add Book"\cf0 );\
+        \cf7 addDialog\cf0 .setDefaultCloseOperation(JFrame.
+\f3\i\b \cf6 DISPOSE_ON_CLOSE
+\f0\i0\b0 \cf0 );\
+\
+        JPanel \cf7 panel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JPanel();\
+        JLabel \cf7 titleLabel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JLabel(\cf9 "Title:"\cf0 );\
+        JLabel \cf7 barcodeLabel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JLabel(\cf9 "Barcode:"\cf0 );\
+\
+        JTextField \cf7 titleTextField\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextField(20);\
+        JTextField \cf7 barcodeTextField\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextField(20);\
+\
+        JButton \cf7 addButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Add"\cf0 );\
+        \cf7 addButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                \
+\
+                \cf5 // Show a confirmation message\cf0 \
+                JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 addDialog\cf0 , \cf9 "Book added successfully."\cf0 , \cf9 "Book Added"\cf0 , JOptionPane.
+\f3\i\b \cf6 INFORMATION_MESSAGE
+\f0\i0\b0 \cf0 );\
+\
+                \cf7 addDialog\cf0 .dispose();\
+            \}\
+        \});\
+\
+        \cf7 panel\cf0 .add(\cf7 titleLabel\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 titleTextField\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 barcodeLabel\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 barcodeTextField\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 addButton\cf0 );\
+\
+        \cf7 addDialog\cf0 .add(\cf7 panel\cf0 );\
+        \cf7 addDialog\cf0 .pack();\
+        \cf7 addDialog\cf0 .setVisible(
+\f1\b \cf3 true
+\f0\b0 \cf0 );\
+    \}\
+\
+    \cf2 /**\cf0 \
+\cf2      * Creates a dialog for removing a book and removes it from the database.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  removeBookDialog() \{\
+        JFrame \cf7 removeDialog\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JFrame(\cf9 "Remove Book"\cf0 );\
+        \cf7 removeDialog\cf0 .setDefaultCloseOperation(JFrame.
+\f3\i\b \cf6 DISPOSE_ON_CLOSE
+\f0\i0\b0 \cf0 );\
+\
+        JPanel \cf7 panel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JPanel();\
+        JLabel \cf7 titleLabel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JLabel(\cf9 "Title or Barcode:"\cf0 );\
+        JTextField \cf7 titleOrBarcodeTextField\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextField(20);\
+\
+        JButton \cf7 removeButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Remove"\cf0 );\
+        \cf7 removeButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                String \cf7 titleOrBarcode\cf0  = \cf7 titleOrBarcodeTextField\cf0 .getText();\
+                
+\f1\b \cf3 boolean
+\f0\b0 \cf0  \cf7 removed\cf0  = 
+\f2\i removeBook
+\f0\i0 (\cf7 titleOrBarcode\cf0 );\
+\
+                
+\f1\b \cf3 if
+\f0\b0 \cf0  (\cf7 removed\cf0 ) \{\
+                    
+\f2\i displayDatabaseContent
+\f0\i0 ();\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 removeDialog\cf0 , \cf9 "Book removed successfully."\cf0 , \cf9 "Book Removed"\cf0 , JOptionPane.
+\f3\i\b \cf6 INFORMATION_MESSAGE
+\f0\i0\b0 \cf0 );\
+                \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 removeDialog\cf0 , \cf9 "Book not found or an error occurred."\cf0 , \cf9 "Error"\cf0 , JOptionPane.
+\f3\i\b \cf6 ERROR_MESSAGE
+\f0\i0\b0 \cf0 );\
+                \}\
+\
+                \cf7 removeDialog\cf0 .dispose();\
+            \}\
+        \});\
+\
+        \cf7 panel\cf0 .add(\cf7 titleLabel\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 titleOrBarcodeTextField\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 removeButton\cf0 );\
+\
+        \cf7 removeDialog\cf0 .add(\cf7 panel\cf0 );\
+        \cf7 removeDialog\cf0 .pack();\
+        \cf7 removeDialog\cf0 .setVisible(
+\f1\b \cf3 true
+\f0\b0 \cf0 );\
+    \}\
+\
+    \cf2 /**\cf0 \
+\cf2      * Creates a dialog for checking out a book and updates its due date and status in the database.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  checkoutBookDialog() \{\
+        JFrame \cf7 checkoutDialog\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JFrame(\cf9 "Check Out Book"\cf0 );\
+        \cf7 checkoutDialog\cf0 .setDefaultCloseOperation(JFrame.
+\f3\i\b \cf6 DISPOSE_ON_CLOSE
+\f0\i0\b0 \cf0 );\
+\
+        JPanel \cf7 panel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JPanel();\
+        JLabel \cf7 titleLabel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JLabel(\cf9 "Title or Barcode:"\cf0 );\
+        JTextField \cf7 titleOrBarcodeTextField\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextField(20);\
+\
+        JButton \cf7 checkoutButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Check Out"\cf0 );\
+        \cf7 checkoutButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                String \cf7 titleOrBarcode\cf0  = \cf7 titleOrBarcodeTextField\cf0 .getText(); \
+                
+\f1\b \cf3 boolean
+\f0\b0 \cf0  \cf7 checkedOut\cf0  = 
+\f2\i checkoutBook
+\f0\i0 (\cf7 titleOrBarcode\cf0 );\
+\
+                
+\f1\b \cf3 if
+\f0\b0 \cf0  (\cf7 checkedOut\cf0 ) \{\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 checkoutDialog\cf0 , \cf9 "Book checked out successfully."\cf0 , \cf9 "Book Checked Out"\cf0 , JOptionPane.
+\f3\i\b \cf6 INFORMATION_MESSAGE
+\f0\i0\b0 \cf0 );\
+                    
+\f2\i displayDatabaseContent
+\f0\i0 (); \cf5 // Update the displayed information\cf0 \
+                \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 checkoutDialog\cf0 , \cf9 "Book not found or an error occurred."\cf0 , \cf9 "Error"\cf0 , JOptionPane.
+\f3\i\b \cf6 ERROR_MESSAGE
+\f0\i0\b0 \cf0 );\
+                \}\
+\
+                \cf7 checkoutDialog\cf0 .dispose();\
+            \}\
+        \});\
+\
+        \cf7 panel\cf0 .add(\cf7 titleLabel\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 titleOrBarcodeTextField\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 checkoutButton\cf0 );\
+\
+        \cf7 checkoutDialog\cf0 .add(\cf7 panel\cf0 );\
+        \cf7 checkoutDialog\cf0 .pack();\
+        \cf7 checkoutDialog\cf0 .setVisible(
+\f1\b \cf3 true
+\f0\b0 \cf0 );\
+    \}\
+    \
+    \cf5 //\cf0 \
+    \
+    \cf2 /**\cf0 \
+\cf2      * Creates a dialog for checking in a book and updates its due date and status in the database.\cf0 \
+\cf2      */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  checkinBookDialog() \{\
+        JFrame \cf7 checkinDialog\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JFrame(\cf9 "Check In Book"\cf0 );\
+        \cf7 checkinDialog\cf0 .setDefaultCloseOperation(JFrame.
+\f3\i\b \cf6 DISPOSE_ON_CLOSE
+\f0\i0\b0 \cf0 );\
+\
+        JPanel \cf7 panel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JPanel();\
+        JLabel \cf7 titleLabel\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JLabel(\cf9 "Title or Barcode:"\cf0 );\
+        JTextField \cf7 titleOrBarcodeTextField\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JTextField(20);\
+\
+        JButton \cf7 checkinButton\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  JButton(\cf9 "Check In"\cf0 );\
+        \cf7 checkinButton\cf0 .addActionListener(
+\f1\b \cf3 new
+\f0\b0 \cf0  ActionListener() \{\
+            \cf8 @Override\cf0 \
+            
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  actionPerformed(ActionEvent \cf7 e\cf0 ) \{\
+                String \cf7 titleOrBarcode\cf0  = \cf7 titleOrBarcodeTextField\cf0 .getText();\
+                
+\f1\b \cf3 boolean
+\f0\b0 \cf0  \cf7 checkedIn\cf0  = 
+\f2\i checkinBook
+\f0\i0 (\cf7 titleOrBarcode\cf0 );\
+\
+                
+\f1\b \cf3 if
+\f0\b0 \cf0  (\cf7 checkedIn\cf0 ) \{\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 checkinDialog\cf0 , \cf9 "Book checked in successfully."\cf0 , \cf9 "Book Checked In"\cf0 , JOptionPane.
+\f3\i\b \cf6 INFORMATION_MESSAGE
+\f0\i0\b0 \cf0 );\
+                    
+\f2\i displayDatabaseContent
+\f0\i0 (); \cf5 // Update the displayed information\cf0 \
+                \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+                    JOptionPane.
+\f2\i showMessageDialog
+\f0\i0 (\cf7 checkinDialog\cf0 , \cf9 "Book not found or an error occurred."\cf0 , \cf9 "Error"\cf0 , JOptionPane.
+\f3\i\b \cf6 ERROR_MESSAGE
+\f0\i0\b0 \cf0 );\
+                \}\
+\
+                \cf7 checkinDialog\cf0 .dispose();\
+            \}\
+        \});\
+\
+        \cf7 panel\cf0 .add(\cf7 titleLabel\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 titleOrBarcodeTextField\cf0 );\
+        \cf7 panel\cf0 .add(\cf7 checkinButton\cf0 );\
+\
+        \cf7 checkinDialog\cf0 .add(\cf7 panel\cf0 );\
+        \cf7 checkinDialog\cf0 .pack();\
+        \cf7 checkinDialog\cf0 .setVisible(
+\f1\b \cf3 true
+\f0\b0 \cf0 );\
+    \}\
+\
+  \
+    \cf2 /**\cf0 \
+\cf2     * Removes a book from the database.\cf0 \
+\cf2     *\cf0 \
+\cf2     * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  titleOrBarcode Title or \ul barcode\ulnone  of the book to be removed.\cf0 \
+\cf2     * 
+\f1\b \cf4 @return
+\f0\b0 \cf2  True if the book is successfully removed, false otherwise.\cf0 \
+\cf2     */\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 boolean
+\f0\b0 \cf0  removeBook(String \cf7 titleOrBarcode\cf0 ) \{\
+        String \cf7 url\cf0  = \cf9 "jdbc:mysql://localhost:3306/LMS"\cf0 ;\
+        String \cf7 uname\cf0  = \cf9 "root"\cf0 ;\
+        String \cf7 password\cf0  = \cf9 ""\cf0 ;\
+\
+        \cf5 // SQL query for book removal\cf0 \
+        String \cf7 deleteQuery\cf0  = \cf9 "DELETE FROM BooksInMyLibrary WHERE Title = '"\cf0  + \cf7 titleOrBarcode\cf0  + \cf9 "' OR Barcode = '"\cf0  + \cf7 titleOrBarcode\cf0  + \cf9 "'"\cf0 ;\
+        
+\f1\b \cf3 try
+\f0\b0 \cf0  (Connection \cf7 con\cf0  = DriverManager.
+\f2\i getConnection
+\f0\i0 (\cf7 url\cf0 , \cf7 uname\cf0 , \cf7 password\cf0 );\
+             Statement \cf7 statement\cf0  = \cf7 con\cf0 .createStatement()) \{\
+        	\cf5 // Executing the delete query and returning the result\cf0 \
+            
+\f1\b \cf3 int
+\f0\b0 \cf0  \cf7 rowsAffected\cf0  = \cf7 statement\cf0 .executeUpdate(\cf7 deleteQuery\cf0 );\
+            
+\f1\b \cf3 return
+\f0\b0 \cf0  \cf7 rowsAffected\cf0  > 0;\
+        \} 
+\f1\b \cf3 catch
+\f0\b0 \cf0  (SQLException \cf7 ex\cf0 ) \{\
+            \cf7 ex\cf0 .printStackTrace();\
+            
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 false
+\f0\b0 \cf0 ;\
+        \}\
+    \}\
+    \
+    \
+    \
+    \cf2 /**\cf0 \
+\cf2      * Checks in a book by updating its due date and status in the database.\cf0 \
+\cf2      *\cf0 \
+\cf2      * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  titleOrBarcode Title or \ul barcode\ulnone  of the book to be checked in.\cf0 \
+\cf2      * 
+\f1\b \cf4 @return
+\f0\b0 \cf2  True if the book is successfully checked in, false otherwise.\cf0 \
+\cf2      */\cf0 \
+\
+   \cf5 //##########################################################################\cf0 \
+    \cf5 // If you uncomment this section, the program will perform\cf0 \
+    \cf5 // check-in/out with a confirmation message no problem\cf0 \
+    \cf5 // The problem is that is not updating the due date and not changing status\cf0 \
+    \cf5 //##########################################################################\cf0 \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 boolean
+\f0\b0 \cf0  checkoutBook(String \cf7 titleOrBarcode\cf0 ) \{\
+        \cf5 // Get the current date\cf0 \
+        SimpleDateFormat \cf7 sdf\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  SimpleDateFormat(\cf9 "yyyy-MM-dd"\cf0 );\
+        Date \cf7 currentDate\cf0  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  Date();\
+        Calendar \cf7 calendar\cf0  = Calendar.
+\f2\i getInstance
+\f0\i0 ();\
+        \cf7 calendar\cf0 .setTime(\cf7 currentDate\cf0 );\
+        \cf7 calendar\cf0 .add(Calendar.
+\f3\i\b \cf6 WEEK_OF_YEAR
+\f0\i0\b0 \cf0 , 4); \cf5 // Add 4 weeks to the current date\cf0 \
+        Date \cf7 dueDate\cf0  = \cf7 calendar\cf0 .getTime();\
+\
+        
+\f2\i setFormattedDueDate
+\f0\i0 (\cf7 sdf\cf0 .format(\cf7 dueDate\cf0 ));\
+      \
+		
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 true
+\f0\b0 \cf0 ;\
+    \}\
+ \
+    
+\f1\b \cf3 private
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 boolean
+\f0\b0 \cf0  checkinBook(String \cf7 titleOrBarcode\cf0 ) \{\
+    	\
+\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 true
+\f0\b0 \cf0 ;\
+    \}\
+    \
+    \
+    \
+    \cf5 //Old code that is not performing properly, jumping straight into error handlers\cf0 \
+    \
+   \cf5 /* private static boolean checkinBook(String titleOrBarcode) \{\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf5         // Database connection details\cf0 \
+\cf5         String \ul url\ulnone  = "\ul jdbc\ulnone :\ul mysql\ulnone ://\ul localhost\ulnone :3306/LMS";\cf0 \
+\cf5         String \ul uname\ulnone  = "root";\cf0 \
+\cf5         String password = "";\cf0 \
+\
+\cf5         try \{\cf0 \
+\cf5             // Load the MySQL JDBC driver\cf0 \
+\cf5             Class.forName("com.mysql.cj.jdbc.Driver");\cf0 \
+\
+\cf5             // SQL query to update the due date for the checked-in book\cf0 \
+\cf5             String updateQuery = "UPDATE BooksInMyLibrary SET DueDate = NULL, Status = 'Available' WHERE Title = ?";\cf0 \
+\cf5             \cf0 \
+\cf5             try (Connection \ul con\ulnone  = DriverManager.getConnection(\ul url\ulnone , \ul uname\ulnone , password);\cf0 \
+\cf5                  PreparedStatement preparedStatement = con.prepareStatement(updateQuery)) \{\cf0 \
+\
+\cf5                 // Set parameter for the prepared statement\cf0 \
+\cf5                 preparedStatement.setString(1, titleOrBarcode);\cf0 \
+\
+\cf5                 // Execute the update query\cf0 \
+\cf5                 \ul int\ulnone  rowsAffected = preparedStatement.executeUpdate();\cf0 \
+\
+\cf5                 // Check if the update was successful\cf0 \
+\cf5                 return rowsAffected > 0;\cf0 \
+\
+\cf5             \} catch (SQLException \ul ex\ulnone ) \{\cf0 \
+\cf5                 // Log the exception or provide a user-friendly error message\cf0 \
+\cf5                 ex.printStackTrace();\cf0 \
+\cf5                 return false;\cf0 \
+\cf5             \}\cf0 \
+\
+\cf5         \} catch (ClassNotFoundException e) \{\cf0 \
+\cf5             // Log the exception or provide a user-friendly error message\cf0 \
+\cf5             e.printStackTrace();\cf0 \
+\cf5             return false;\cf0 \
+\cf5         \}\cf0 \
+\cf5         // Ensure resources are closed in case of an exception\cf0 \
+\cf5         finally \{\cf0 \
+\cf5             // Close resources (if necessary)\cf0 \
+\cf5         \}\cf0 \
+\cf5     \}*/\cf0 \
+\
+    \
+    \cf2 /**\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf2      * Checks out a book by updating its due date and status in the database.\cf0 \
+\cf2      *\cf0 \
+\cf2      * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  titleOrBarcode Title or \ul barcode\ulnone  of the book to be checked out.\cf0 \
+\cf2      * 
+\f1\b \cf4 @return
+\f0\b0 \cf2  True if the book is successfully checked out, false otherwise.\cf0 \
+\cf2      */\cf0 \
+    \cf5 /*private static boolean checkoutBook(String titleOrBarcode) \{\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf5         // Get the current date\cf0 \
+\cf5         SimpleDateFormat \ul sdf\ulnone  = new SimpleDateFormat("yyyy-MM-dd");\cf0 \
+\cf5         Date currentDate = new Date();\cf0 \
+\cf5         Calendar calendar = Calendar.getInstance();\cf0 \
+\cf5         calendar.setTime(currentDate);\cf0 \
+\cf5         calendar.add(Calendar.WEEK_OF_YEAR, 4); // Add 4 weeks to the current date\cf0 \
+\cf5         Date dueDate = calendar.getTime();\cf0 \
+\
+\cf5         // Database connection details\cf0 \
+\cf5         String \ul url\ulnone  = "\ul jdbc\ulnone :\ul mysql\ulnone ://\ul localhost\ulnone :3306/LMS";\cf0 \
+\cf5         String \ul uname\ulnone  = "root";\cf0 \
+\cf5         String password = "";\cf0 \
+\
+\cf5         // SQL query to update the due date and status for the checked-out book\cf0 \
+\cf5         String updateQuery = "UPDATE BooksInMyLibrary SET DueDate = ?, Status = 'Checked Out' WHERE Title = ?";\cf0 \
+\cf5         try (Connection \ul con\ulnone  = DriverManager.getConnection(\ul url\ulnone , \ul uname\ulnone , password);\cf0 \
+\cf5              PreparedStatement preparedStatement = con.prepareStatement(updateQuery)) \{\cf0 \
+\
+\cf5             // Set parameters for the prepared statement\cf0 \
+\cf5             preparedStatement.setString(1, sdf.format(dueDate));\cf0 \
+\cf5             preparedStatement.setString(2, titleOrBarcode);\cf0 \
+\
+\cf5             // Execute the update query\cf0 \
+\cf5             \ul int\ulnone  rowsAffected = preparedStatement.executeUpdate();\cf0 \
+\
+\cf5             // Check if the update was successful\cf0 \
+\cf5             return rowsAffected > 0;\cf0 \
+\
+\cf5         \} catch (SQLException \ul ex\ulnone ) \{\cf0 \
+\cf5             ex.printStackTrace();\cf0 \
+\cf5             return false;\cf0 \
+\cf5         \}\cf0 \
+\cf5     \}*/\cf0 \
+    \
+    \
+    \cf5 //\cf0 \
+		\
+    	\cf2 /**\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf2     	 * Gets the due date of a book.\cf0 \
+\cf2     	 *\cf0 \
+\cf2     	 * 
+\f1\b \cf4 @return
+\f0\b0 \cf2  The due date of the book.\cf0 \
+\cf2     	 */\cf0 \
+		
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  String getDueDate() \{\
+			
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f2\i \cf6 dueDate
+\f0\i0 \cf0 ;\
+		\}\
+		\
+		\cf2 /**\cf0 \
+\cf2 	     * Sets the due date of a book.\cf0 \
+\cf2 	     *\cf0 \
+\cf2 	     * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  dueDate The new due date of the book.\cf0 \
+\cf2 	     */\cf0 \
+		
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  setDueDate(String \cf7 dueDate\cf0 ) \{\
+			JDBC.
+\f2\i \cf6 dueDate
+\f0\i0 \cf0  = \cf7 dueDate\cf0 ;\
+		\}\
+		\
+		\cf2 /**\cf0 \
+\cf2 	     * Gets the formatted due date of a book.\cf0 \
+\cf2 	     *\cf0 \
+\cf2 	     * 
+\f1\b \cf4 @return
+\f0\b0 \cf2  The formatted due date of the book.\cf0 \
+\cf2 	     */\cf0 \
+		
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  String getFormattedDueDate() \{\
+			
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f2\i \cf6 formattedDueDate
+\f0\i0 \cf0 ;\
+		\}\
+		\
+		\cf2 /**\cf0 \
+\cf2 	     * Sets the formatted due date of a book.\cf0 \
+\cf2 	     *\cf0 \
+\cf2 	     * 
+\f1\b \cf4 @param
+\f0\b0 \cf2  formattedDueDate The new formatted due date of the book.\cf0 \
+\cf2 	     */\cf0 \
+		
+\f1\b \cf3 public
+\f0\b0 \cf0  
+\f1\b \cf3 static
+\f0\b0 \cf0  
+\f1\b \cf3 void
+\f0\b0 \cf0  setFormattedDueDate(String \cf7 formattedDueDate\cf0 ) \{\
+			JDBC.
+\f2\i \cf6 formattedDueDate
+\f0\i0 \cf0  = \cf7 formattedDueDate\cf0 ;\
+		\}\
+	\
+    \}\
+           \
+\
+	}
